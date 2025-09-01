@@ -53,10 +53,19 @@
         <div class="flex justify-center items-center mb-6">
             <label for="month-select" class="mr-2 font-bold text-gray-700">월 선택:</label>
             <select id="month-select" class="p-2 border border-gray-300 rounded-md">
-                <option value="7">2025년 7월</option>
-                <option value="8">2025년 8월</option>
-                <option value="9" selected>2025년 9월</option>
+                <option value="9">2025년 9월</option>
                 <option value="10">2025년 10월</option>
+                <option value="11">2025년 11월</option>
+                <option value="12">2025년 12월</option>
+                <option value="13">2026년 1월</option>
+                <option value="14">2026년 2월</option>
+                <option value="15">2026년 3월</option>
+                <option value="16">2026년 4월</option>
+                <option value="17">2026년 5월</option>
+                <option value="18">2026년 6월</option>
+                <option value="19">2026년 7월</option>
+                <option value="20">2026년 8월</option>
+                <option value="21">2026년 9월</option>
             </select>
         </div>
 
@@ -85,7 +94,15 @@
             const container = document.getElementById('scheduleContainer');
             container.innerHTML = ''; // 기존 내용 지우기
             
-            const monthName = `${year}년 ${month}월`;
+            // year와 month 값 재계산 (2025년 9월부터 2026년 9월까지)
+            let displayYear = year;
+            let displayMonth = month;
+            if (month > 12) {
+                displayYear = 2026;
+                displayMonth = month - 12;
+            }
+
+            const monthName = `${displayYear}년 ${displayMonth}월`;
             const monthDiv = document.createElement('div');
             monthDiv.className = 'month-container';
             monthDiv.innerHTML = `<h2 class="text-xl font-bold text-center mb-4 text-gray-700">${monthName}</h2>`;
@@ -106,18 +123,18 @@
             });
 
             // 빈칸 채우기 (해당 월의 첫날이 시작하는 요일)
-            const firstDayOfMonth = new Date(year, month - 1, 1);
+            const firstDayOfMonth = new Date(displayYear, displayMonth - 1, 1);
             const startingDay = firstDayOfMonth.getDay();
             for (let i = 0; i < startingDay; i++) {
                 grid.appendChild(document.createElement('div'));
             }
 
             // 날짜 및 스케줄 채우기
-            const lastDay = new Date(year, month, 0).getDate();
+            const lastDay = new Date(displayYear, displayMonth, 0).getDate();
             const today = new Date();
 
             for (let day = 1; day <= lastDay; day++) {
-                const date = new Date(year, month - 1, day);
+                const date = new Date(displayYear, displayMonth - 1, day);
                 const schedule = getScheduleForDate(date);
                 const cell = document.createElement('div');
                 cell.className = `day-cell p-2 ${schedule}`;
@@ -138,7 +155,8 @@
         const monthSelect = document.getElementById('month-select');
         monthSelect.addEventListener('change', (event) => {
             const selectedMonth = parseInt(event.target.value, 10);
-            generateMonthlySchedule(2025, selectedMonth);
+            const year = 2025; // 2025년 7월 11일 기준이므로
+            generateMonthlySchedule(year, selectedMonth);
         });
 
         // 초기 스케줄 생성 (기본값 9월)
